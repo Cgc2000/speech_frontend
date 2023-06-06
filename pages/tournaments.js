@@ -28,8 +28,9 @@ export default function Tournaments() {
           userId: userId
         }).then((res) => {
           var data = JSON.parse(res.data)
-          console.log(data)
           setTournaments(data)
+          setLoading(false)
+        }).catch((err) => {
           setLoading(false)
         })
     }
@@ -43,6 +44,25 @@ export default function Tournaments() {
     e.preventDefault();
     router.push('/register');
   };
+  const handleDelete = (id) => {
+    console.log(id)
+    client
+      .post("/tournament/delete_tournament/", {
+        tournamentId: id
+      }).then((res) => {
+        client
+          .post("/tournament/get_user_tournaments/", {
+            userId: userId
+          }).then((res) => {
+            var data = JSON.parse(res.data)
+            console.log(data)
+            setTournaments(data)
+          }).catch((err) => {
+            setTournaments([])
+          })
+      })
+  }
+
   return (
     <Layout>
       <Head>
@@ -50,9 +70,9 @@ export default function Tournaments() {
       </Head>
       <h1 className={styles.titleContainer}>Tournaments</h1>
       <hr></hr>
-      <h3 className={styles.titleContainer}>Created Tournaments</h3>
+      <h3 className={styles.titleContainer}>Registered Tournaments</h3>
       {loading && <p className={styles.tournamentLoading}>Loading...</p>}
-      {tournaments.map(tournament => <p className={styles.tournamentContainer}>{tournament.tournamentName}</p>)}
+      {tournaments.map(tournament => <div className={styles.tournament}><p className={styles.tournamentContainer}>{tournament.tournamentName}</p><button className={styles.deleteButton} onClick={() => handleDelete(tournament.tournamentId)}>Delete</button></div>)}
       <button className={styles.registerLink} onClick={handleClick}>
         <p>Register a New Tournament</p>
       </button>
