@@ -169,6 +169,21 @@
   text-decoration: none;
 }
 
+.submitButtonLoading {
+  background-color: dodgerblue;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.3rem 0.3rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  font-size: 16px;
+  margin-left: 50%;
+  -ms-transform: translate(-50%, 0%);
+  transform: translate(-50%, 0%);
+  background-image: linear-gradient(rgb(0 0 0/30%) 0 0);
+  text-decoration: none;
+}
+
 .textBox {
   padding: 0.25rem 0.1rem;
   width: 15rem;
@@ -203,4 +218,17 @@
   width: 15rem;
   min-width: 15rem;
   border-width: 1px;
+}
+
+.tournamentContainer {
+  text-align: center;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 0 0
+}
+
+.tournamentLoading {
+  text-align: center;
+  font-weight: bold;
+  margin: 0 0
 }

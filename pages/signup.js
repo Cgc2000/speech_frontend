@@ -31,7 +31,7 @@ export default class Signup extends React.Component {
     e.preventDefault();
 
     client
-      .post("/api/register/", {
+      .post("/auth/register/", {
         firstName: this.state.first,
         lastName: this.state.last,
         email: this.state.email,

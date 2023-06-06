@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { React, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Layout from '../components/layout';
 import styles from '../styles/utils.module.css';
@@ -16,14 +16,15 @@ const client = axios.create({
 
 
 const Login = () => {
-  const [emailInput, setEmailInput] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { login } = useAppContext()
   const [valid, setValid] = useState(true)
+  const [loading, setLoading] = useState(false)
   const router = useRouter();
 
   const handleEmailInput = (e) => {
-    setEmailInput(e.target.value);
+    setEmail(e.target.value);
     setValid(true)
   };
 
@@ -34,11 +35,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    var result = await login(client, emailInput, password)
+    setLoading(true)
+    var result = await login(client, email, password)
     if (result) {
+      setLoading(false)
       router.push('/');
     }
     else {
+      setLoading(false)
       setValid(false)
     }
   };
@@ -52,7 +56,7 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <div className={styles.inline}>
           <label className={styles.formLabelRequired} htmlFor="email">Email Address:</label>
-          <input className={valid ? styles.textBox : styles.textBoxInvalid} required type="email" id="email" name="email" onChange={handleEmailInput} value={emailInput} />
+          <input className={valid ? styles.textBox : styles.textBoxInvalid} required type="email" id="email" name="email" onChange={handleEmailInput} value={email} />
         </div>
         <div className={styles.inline}>
           <label className={styles.formLabelRequired} htmlFor="password">Password:</label>
@@ -60,7 +64,7 @@ const Login = () => {
             <input className={valid ? styles.textBox : styles.textBoxInvalid} required type="password" id="password" name="password" onChange={handlePasswordInput} value={password} />
           </div>
         </div>
-        <button className={styles.submitButton} type="submit">Submit</button>
+        <button className={!loading ? styles.submitButton : styles.submitButtonLoading} type="submit">Submit</button>
       </form>
     </Layout>
   );
