@@ -39,7 +39,7 @@ const Login = () => {
     var result = await login(client, email, password)
     if (result) {
       setLoading(false)
-      router.push('/');
+      router.push('/tournaments');
     }
     else {
       setLoading(false)
