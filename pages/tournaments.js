@@ -68,23 +68,6 @@ export default function Tournaments() {
     router.push('/register');
   };
 
-  const handleDelete = (id) => {
-    client
-      .post("/tournament/delete_tournament/", {
-        tournamentId: id
-      }).then((res) => {
-        client
-          .post("/tournament/get_user_tournaments/", {
-            userId: userId
-          }).then((res) => {
-            var data = JSON.parse(res.data)
-            setTournaments(data)
-          }).catch((err) => {
-            setTournaments([])
-          })
-      })
-  }
-
   const handleEnteredDelete = (id) => {
     client
       .post("/tournament/delete_competitor/", {
@@ -118,7 +101,6 @@ export default function Tournaments() {
         accessCode: accessCode
       }).then((res) => {
         var data = JSON.parse(res.data)
-        console.log(data)
         router.push({
           pathname: '/tournamentsignup',
           query: { tournamentId: data['tournamentId'] }
@@ -138,18 +120,8 @@ export default function Tournaments() {
       {loading &&
         <p className={styles.tournamentLoading}>Loading...</p>}
       {tournaments.map(tournament =>
-        <div className={styles.tournament}>
-          <div className={styles.fullWidth}>
-            <div className={styles.inlineSplit}>
-              <p className={styles.tournamentContainer}>{tournament.tournamentName}</p>
-              <div className={styles.tournamentRight}>
-                <p className={styles.accessCode}>Code: {tournament.accessCode}</p>
-                <button className={styles.deleteButton} onClick={() => handleDelete(tournament.tournamentId)}>Delete</button>
-              </div>
-            </div>
-            <p className={styles.schoolsEntered}>{tournament.schoolsEntered} schools entered</p>
-          </div>
-        </div>)}
+        <Tournament tournament={...tournament} tournaments={tournaments} setTournaments={setTournaments}></Tournament>
+      )}
       <button className={styles.registerLink} onClick={handleRegisterClick}>
         <p>Register a New Tournament</p>
       </button>
@@ -176,4 +148,69 @@ export default function Tournaments() {
       }
     </Layout>
   );
+}
+
+export function Tournament(props) {
+  const [competitors, setCompetitors] = useState([])
+  const [showSchools, setShowSchools] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [noCompetitors, setNoCompetitors] = useState(false)
+
+  const getCompetitors = () => {
+    setLoading(true)
+    client
+      .post("/tournament/get_competitors/", {
+        tournamentId: props.tournament.tournamentId
+      }).then((res) => {
+        var data = JSON.parse(res.data)
+        setCompetitors(data)
+        setShowSchools(true)
+        setLoading(false)
+      }).catch((err) => {
+        setLoading(false)
+        setShowSchools(true)
+        setNoCompetitors(true)
+      })
+  }
+
+  const toggleShowSchools = () => {
+    console.log(showSchools)
+    if (!showSchools) {
+      getCompetitors()
+    }
+    else {
+      setShowSchools(false)
+      setNoCompetitors(false)
+    }
+  }
+
+  const handleDelete = (e) => {
+    e.preventDefault()
+    client
+      .post("/tournament/delete_tournament/", {
+        tournamentId: props.tournament.tournamentId
+      }).then((res) => {
+        const newTournaments = props.tournaments.filter(t => t.tournamentId != props.tournament.tournamentId)
+        props.setTournaments(newTournaments)
+      })
+  }
+  return (
+    <div className={styles.tournament}>
+      <div className={styles.fullWidth}>
+        <div className={styles.inlineSplit}>
+          <p className={styles.tournamentContainer}>{props.tournament.tournamentName}</p>
+          <div className={styles.tournamentRight}>
+            <p className={styles.accessCode}>Code: {props.tournament.accessCode}</p>
+            <button className={styles.deleteButton} onClick={handleDelete}>Delete</button>
+          </div>
+        </div>
+        <p className={styles.schoolsEnteredTitle} onClick={toggleShowSchools}>{props.tournament.schoolsEntered} schools entered:</p>
+        {loading && <p className={styles.schoolsEntered}>Loading...</p>}
+        {noCompetitors && <p className={styles.schoolsEntered}>No schools found.</p>}
+        {showSchools && competitors.map(competitor =>
+          <p className={styles.schoolsEntered}>{competitor.competitorSchool}</p>
+        )}
+      </div>
+    </div>
+  )
 }

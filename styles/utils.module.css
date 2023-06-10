@@ -309,3 +309,12 @@
 .fullWidth {
   width: 100%
 }
+
+.schoolsEnteredTitle {
+  margin: 0.5rem 0.5rem;
+  font-size: small;
+}
+
+.schoolsEnteredTitle:hover {
+  text-decoration: underline;
+}
