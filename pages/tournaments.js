@@ -68,21 +68,14 @@ export default function Tournaments() {
     router.push('/register');
   };
 
-  const handleEnteredDelete = (id) => {
+  const handleEnteredDelete = (tournamentId, competitorId) => {
     client
       .post("/tournament/delete_competitor/", {
-        tournamentId: id,
-        registerUserId: userId
+        tournamentId: tournamentId,
+        competitorId: competitorId
       }).then((res) => {
-        client
-          .post("/tournament/get_user_entered/", {
-            userId: userId
-          }).then((res) => {
-            var data = JSON.parse(res.data)
-            setEnteredTournaments(data)
-          }).catch((err) => {
-            setEnteredTournaments([])
-          })
+        const newTournaments = enteredTournaments.filter(tournament => tournament.competitorId != competitorId)
+        setEnteredTournaments(newTournaments)
       })
   }
 
@@ -109,6 +102,13 @@ export default function Tournaments() {
       })
   }
 
+  const handleAddEntries = (id) => {
+    router.push({
+      pathname: '/entries',
+      query: { competitorId: id }
+    })
+  }
+
   return (
     <Layout>
       <Head>
@@ -133,18 +133,19 @@ export default function Tournaments() {
         <div className={styles.tournament}>
           <p className={styles.tournamentContainer}>{tournament.tournamentName}</p>
           <div className={styles.tournamentRight}>
-            <button className={styles.withdrawButton} onClick={() => handleEnteredDelete(tournament.tournamentId)}>Withdraw</button>
+            <button className={styles.addEntriesButton} onClick={() => handleAddEntries(tournament.competitorId)}>Add Entries</button>
+            <button className={styles.withdrawButton} onClick={() => handleEnteredDelete(tournament.tournamentId, tournament.competitorId)}>Withdraw</button>
           </div>
         </div>)}
       <button className={styles.registerLink} onClick={handleSignupClick}>
         <p>Sign Up for a Tournament</p>
       </button>
       {signingUp &&
-        <div className={styles.accessCodeInput}>
+        <form className={styles.accessCodeInput}>
           <label className={styles.formLabel} for="accessCode">Access Code:</label>
           <input className={styles.textBoxAccess} type="text" id="accessCode" name="accessCode" onChange={handleAccessCodeInput} value={accessCode} />
-          <button className={styles.inlineSubmitButton} type="button" onClick={handleSignupSubmit}>Submit</button>
-        </div>
+          <button className={styles.inlineSubmitButton} type="submit" onClick={handleSignupSubmit}>Submit</button>
+        </form>
       }
     </Layout>
   );
@@ -174,7 +175,6 @@ export function Tournament(props) {
   }
 
   const toggleShowSchools = () => {
-    console.log(showSchools)
     if (!showSchools) {
       getCompetitors()
     }

@@ -56,7 +56,6 @@ const TournamentSignup = () => {
   }
 
   useEffect(() => {
-    console.log(router.query)
     client
       .post("/tournament/get_by_id/", {
         tournamentId: router.query.tournamentId

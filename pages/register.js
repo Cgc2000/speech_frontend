@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Layout from '../components/layout';
 import styles from '../styles/utils.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAppContext } from '../components/context';
 import { useRouter } from 'next/router';
@@ -23,8 +23,26 @@ const Register = () => {
   const [managerPhone, setManagerPhone] = useState('')
   const [tournamentCity, setTournamentCity] = useState('')
   const [tournamentState, setTournamentState] = useState('AL')
+  const [checkedEventList, setCheckedEventList] = useState([]);
+  const [checkAll, setCheckAll] = useState(false)
   const { userId } = useAppContext()
   const router = useRouter();
+
+  const eventListData = [
+    { id: "1", value: "Prose" },
+    { id: "2", value: "Poetry" },
+    { id: "3", value: "Dramatic Interpretation (DI)" },
+    { id: "4", value: "Programmed Oral Interpretation (POI)" },
+    { id: "5", value: "Duo" },
+    { id: "6", value: "Informative" },
+    { id: "7", value: "Persuasive" },
+    { id: "8", value: "Communications Analysis (CA)" },
+    { id: "9", value: "After Dinner Speaking (ADS)" },
+    { id: "10", value: "Impromptu" },
+    { id: "11", value: "Extemporaneous" },
+    { id: "12", value: "International Public Debate Association (IPDA)" },
+    { id: "13", value: "Parliamentary Debate" }
+  ];
 
   const handleTournamentName = (e) => {
     setTournamentName(e.target.value);
@@ -64,7 +82,8 @@ const Register = () => {
         managerEmail: managerEmail,
         managerPhone: managerPhone,
         tournamentCity: tournamentCity,
-        tournamentState: tournamentState
+        tournamentState: tournamentState,
+        events: checkedEventList
       })
       .then((res) => {
         router.push('/tournaments')
@@ -74,6 +93,31 @@ const Register = () => {
         is_valid = false
       });
   }
+
+  const handleSelect = (e) => {
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setCheckedEventList([...checkedEventList, value]);
+      console.log([...checkedEventList, value])
+    } else {
+      const filteredList = checkedEventList.filter((item) => item !== value);
+      console.log(filteredList)
+      setCheckedEventList(filteredList);
+      if (checkAll) {
+        setCheckAll(false)
+      }
+    }
+  };
+
+  const handleSelectAll = e => {
+    setCheckAll(!checkAll);
+    setCheckedEventList(eventListData.map(li => li.value));
+    if (checkAll) {
+      setCheckedEventList([]);
+    }
+  };
 
   return (
     <Layout>
@@ -172,9 +216,24 @@ const Register = () => {
             <option value="WY">Wyoming</option>
           </select>
         </div>
+        <div className={styles.inline}>
+          <label className={styles.formLabelChecklist} for="eventsSelected">Events:</label>
+          <p className={styles.selectAll} onClick={handleSelectAll}>Select all events</p>
+        </div>
+        {eventListData.map((event) =>
+          <div class={styles.center}>
+            <input
+              type="checkbox"
+              name="languages"
+              value={event.value}
+              onChange={handleSelect}
+              checked={checkedEventList.includes(event.value)}
+            />
+            <label className={styles.checkboxLabel} for="managerPhone">{event.value}</label>
+          </div>)}
         <button className={styles.submitButton} type="submit">Submit</button>
       </form>
-    </Layout>
+    </Layout >
   );
 }
 
