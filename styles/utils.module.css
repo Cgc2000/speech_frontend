@@ -231,7 +231,7 @@
 }
 
 .accessCode {
-  padding: 0 1rem
+  padding: 0 1rem;
 }
 
 .tournamentRight {
@@ -354,7 +354,7 @@
 
 .entriesHeader {
   border: 1px solid;
-  padding: 0.1rem 0.5rem
+  padding: 0.1rem 0.5rem;
 }
 
 .entriesRow {
@@ -398,4 +398,48 @@
 
 .selectAll:hover {
   text-decoration: none;
+}
+
+.deleteButtonEntries {
+  background-color: red;
+  border: none;
+  color: black;
+  padding: 0.2rem 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  border-radius: 0.25rem;
+  width: 4rem;
+  cursor: pointer;
+}
+
+.enteredTournamentContainer {
+  font-weight: bold;
+  text-decoration: underline;
+  width: 25%;
+  text-align: right;
+  min-width: 7rem;
+  margin-right: 0.5rem
+}
+
+.enteredTournamentSchool {
+  text-decoration: underline;
+  width: 25%;
+  text-align: right;
+  min-width: 7rem;
+  margin-right: 0.5rem
+}
+
+.description {
+  font-size: x-small;
+  margin-left: 15%;
+  width: 28%
+}
+
+.descriptionUnderline {
+  font-size: x-small;
+  margin-left: 15%;
+  width: 28%;
+  text-decoration: underline;
 }

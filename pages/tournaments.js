@@ -131,7 +131,8 @@ export default function Tournaments() {
         <p className={styles.tournamentLoading}>Loading...</p>}
       {enteredTournaments.map(tournament =>
         <div className={styles.tournament}>
-          <p className={styles.tournamentContainer}>{tournament.tournamentName}</p>
+          <p className={styles.enteredTournamentSchool}>{tournament.competitorSchool}</p>
+          <p className={styles.enteredTournamentContainer}>{tournament.tournamentName}</p>
           <div className={styles.tournamentRight}>
             <button className={styles.addEntriesButton} onClick={() => handleAddEntries(tournament.competitorId)}>Add Entries</button>
             <button className={styles.withdrawButton} onClick={() => handleEnteredDelete(tournament.tournamentId, tournament.competitorId)}>Withdraw</button>
@@ -208,7 +209,7 @@ export function Tournament(props) {
         {loading && <p className={styles.schoolsEntered}>Loading...</p>}
         {noCompetitors && <p className={styles.schoolsEntered}>No schools found.</p>}
         {showSchools && competitors.map(competitor =>
-          <p className={styles.schoolsEntered}>{competitor.competitorSchool}</p>
+          <p className={styles.schoolsEntered}>{competitor.competitorSchool} &#40;{competitor.numEntries} events&#41;</p>
         )}
       </div>
     </div>
