@@ -19,14 +19,24 @@ export default function Tournaments() {
   const [tournaments, setTournaments] = useState([])
   const [enteredTournaments, setEnteredTournaments] = useState([])
   const router = useRouter();
-  const { userId, isLoggedIn } = useAppContext()
+  const { userId, isLoggedIn, setContext } = useAppContext()
   const [loading, setLoading] = useState(true)
   const [enteredLoading, setEnteredLoading] = useState(true)
   const [signingUp, setSigningUp] = useState(false)
   const [accessCode, setAccesCode] = useState('')
 
   useEffect(() => {
+    if (!isLoggedIn) {
+      const data = window.sessionStorage.getItem('MY_APP_STATE');
+      if (!data) {
+        router.push('/login')
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     if (userId) {
+      setLoading(true)
       client
         .post("/tournament/get_user_tournaments/", {
           userId: userId
@@ -41,13 +51,7 @@ export default function Tournaments() {
     else {
       setLoading(false)
     }
-  }, []);
-
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/login')
-    }
-  }, [])
+  }, [userId]);
 
   useEffect(() => {
     client
@@ -60,7 +64,7 @@ export default function Tournaments() {
       }).catch((err) => {
         setEnteredLoading(false)
       })
-  }, [])
+  }, [userId])
 
 
   const handleRegisterClick = (e) => {
@@ -94,19 +98,14 @@ export default function Tournaments() {
         accessCode: accessCode
       }).then((res) => {
         var data = JSON.parse(res.data)
-        router.push({
-          pathname: '/tournamentsignup',
-          query: { tournamentId: data['tournamentId'] }
-        }
-        )
+        window.sessionStorage.setItem('SIGNUP_APP_STATE', JSON.stringify({ tournamentId: data['tournamentId'] }))
+        router.push('/tournamentsignup')
       })
   }
 
   const handleAddEntries = (id) => {
-    router.push({
-      pathname: '/entries',
-      query: { competitorId: id }
-    })
+    window.sessionStorage.setItem('ADD_ENTRIES_APP_STATE', JSON.stringify({ competitorId: id }))
+    router.push('/entries')
   }
 
   return (

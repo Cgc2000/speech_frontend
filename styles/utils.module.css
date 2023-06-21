@@ -443,3 +443,19 @@
   width: 28%;
   text-decoration: underline;
 }
+
+.centerAddEvents {
+  display: flex;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 40%;
+}
+
+.addEventsLabel {
+  width: fit-content;
+  text-align: left;
+  padding-right: 0.5rem;
+  font-size: small;
+  margin-top: auto;
+  margin-bottom: auto;
+}

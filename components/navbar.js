@@ -1,26 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from '../styles/utils.module.css'
 import Link from 'next/link'
 import { useAppContext } from './context';
 
-const RightNavbar = () => {
-  const { firstName, isLoggedIn } = useAppContext()
-  if (isLoggedIn) {
-    return <p className={styles.textRight}>Welcome, {firstName}!</p>
-  }
-  else {
-    return (
-      <nav>
-        <ul>
-          <Link className={styles.linksRight} href='/login'><li>Log In</li></Link>
-          <Link className={styles.linksRight} href='/signup'><li>Sign Up</li></Link>
-        </ul>
-      </nav>
-    )
-  }
-}
-
 const Navbar = () => {
+  const { firstName, isLoggedIn, setContext } = useAppContext()
+
   return (
     <header className={styles.navbar}>
       <nav>
@@ -29,7 +14,14 @@ const Navbar = () => {
           <Link className={styles.links} href='/tournaments'><li>Tournaments</li></Link>
         </ul>
       </nav>
-      <RightNavbar></RightNavbar>
+      {isLoggedIn && <p className={styles.textRight}>Welcome, {firstName}!</p>}
+      {!isLoggedIn &&
+        <nav>
+          <ul>
+            <Link className={styles.linksRight} href='/login'><li>Log In</li></Link>
+            <Link className={styles.linksRight} href='/signup'><li>Sign Up</li></Link>
+          </ul>
+        </nav>}
     </header>
   )
 }

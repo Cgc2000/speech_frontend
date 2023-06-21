@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AppContext = createContext();
 
@@ -23,6 +23,7 @@ export function AppWrapper({ children }) {
         setEmail(data['email'])
         setUserId(data['id'])
         setIsLoggedIn(true)
+        window.sessionStorage.setItem('MY_APP_STATE', JSON.stringify(data))
       })
       .catch((err) => {
         alert("Invalid email or password, try again with valid credentials.")
@@ -32,13 +33,32 @@ export function AppWrapper({ children }) {
 
   }
 
+  useEffect(() => {
+    if (!isLoggedIn) {
+      const data = window.sessionStorage.getItem('MY_APP_STATE');
+      if (data) {
+        setContext(data)
+      }
+    }
+  }, [])
+
+  function setContext(inputData) {
+    const data = JSON.parse(inputData)
+    setFirstName(data["firstName"])
+    setLastName(data['lastName'])
+    setEmail(data['email'])
+    setUserId(data['id'])
+    setIsLoggedIn(true)
+  }
+
   let sharedState = {
     firstName,
     lastName,
     email,
     isLoggedIn,
     userId,
-    login
+    login,
+    setContext
   }
 
   return (

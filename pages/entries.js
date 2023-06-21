@@ -22,7 +22,8 @@ const Entries = () => {
   const [event, setEvent] = useState('')
   const [entries, setEntries] = useState([])
   const [tournamentLoading, setTournamentLoading] = useState(true)
-  const { userId } = useAppContext()
+  const [deletePending, setDeletePending] = useState(false)
+  const { userId, isLoggedIn, setContext } = useAppContext()
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -63,27 +64,35 @@ const Entries = () => {
   }
 
   const handleDelete = (entryId, competitorId) => {
-    client
-      .post('/tournament/delete_entry/', {
-        competitorId: competitorId,
-        entryId, entryId
-      }).then((res) => {
-        const newEntries = entries.filter(entry => entry.entryId != entryId)
-        setEntries(newEntries)
-      })
+    setDeletePending(true)
+    if (!deletePending) {
+      client
+        .post('/tournament/delete_entry/', {
+          competitorId: competitorId,
+          entryId, entryId
+        }).then((res) => {
+          const newEntries = entries.filter(entry => entry.entryId != entryId)
+          setDeletePending(false)
+          setEntries(newEntries)
+        })
+    }
   }
 
   useEffect(() => {
-    if (!userId) {
-      router.push('/login')
+    if (!isLoggedIn) {
+      const data = window.sessionStorage.getItem('MY_APP_STATE');
+      if (!data) {
+        router.push('/login')
+      }
     }
-  })
+  }, [])
 
   useEffect(() => {
-    if (router.query.competitorId) {
+    const stateData = JSON.parse(window.sessionStorage.getItem('ADD_ENTRIES_APP_STATE'))
+    if (stateData) {
       client
         .post('/tournament/get_competitor_by_id/', {
-          competitorId: router.query.competitorId
+          competitorId: stateData.competitorId
         }).then((res) => {
           const data = JSON.parse(res.data)
           setCompetitor(data)
@@ -101,10 +110,12 @@ const Entries = () => {
   }, [])
 
   useEffect(() => {
-    if (router.query.competitorId) {
+    const stateData = JSON.parse(window.sessionStorage.getItem('ADD_ENTRIES_APP_STATE'))
+    if (stateData) {
+      console.log(stateData.competitorId)
       client
         .post('/tournament/get_entries/', {
-          competitorId: router.query.competitorId
+          competitorId: stateData.competitorId
         }).then((res) => {
           const data = JSON.parse(res.data)
           console.log(data)

@@ -25,7 +25,7 @@ const Register = () => {
   const [tournamentState, setTournamentState] = useState('AL')
   const [checkedEventList, setCheckedEventList] = useState([]);
   const [checkAll, setCheckAll] = useState(false)
-  const { userId } = useAppContext()
+  const { userId, isLoggedIn, setContext } = useAppContext()
   const router = useRouter();
 
   const eventListData = [
@@ -118,6 +118,15 @@ const Register = () => {
       setCheckedEventList([]);
     }
   };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      const data = window.sessionStorage.getItem('MY_APP_STATE');
+      if (!data) {
+        router.push('/login')
+      }
+    }
+  }, [])
 
   return (
     <Layout>
@@ -231,6 +240,14 @@ const Register = () => {
             />
             <label className={styles.checkboxLabel} for="managerPhone">{event.value}</label>
           </div>)}
+        <div class={styles.centerAddEvents}>
+          <label className={styles.addEventsLabel} for="addEvents">Add events:</label>
+          <input
+            type="text"
+            name="addEvents"
+            id="addEvents"
+          />
+        </div>
         <button className={styles.submitButton} type="submit">Submit</button>
       </form>
     </Layout >

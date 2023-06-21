@@ -20,7 +20,7 @@ const TournamentSignup = () => {
   const [coachEmail, setCoachEmail] = useState('')
   const [coachPhone, setCoachPhone] = useState('')
   const [tournament, setTournament] = useState()
-  const { userId } = useAppContext()
+  const { userId, isLoggedIn, setContext } = useAppContext()
   const router = useRouter();
 
   const handleCompetitorSchool = (e) => {
@@ -56,20 +56,35 @@ const TournamentSignup = () => {
   }
 
   useEffect(() => {
-    client
-      .post("/tournament/get_by_id/", {
-        tournamentId: router.query.tournamentId
-      })
-      .then((res) => {
-        var data = JSON.parse(res.data)
-        console.log(data)
-        setTournament(data)
-      })
-      .catch((err) => {
-        console.log('Oops!')
-        alert("Tournament not found, try again.")
-        router.push('/tournaments')
-      })
+    if (!isLoggedIn) {
+      const data = window.sessionStorage.getItem('MY_APP_STATE');
+      if (!data) {
+        router.push('/login')
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const data = window.sessionStorage.getItem('SIGNUP_APP_STATE')
+    if (data) {
+      client
+        .post("/tournament/get_by_id/", {
+          tournamentId: JSON.parse(data).tournamentId
+        })
+        .then((res) => {
+          var data = JSON.parse(res.data)
+          console.log(data)
+          setTournament(data)
+        })
+        .catch((err) => {
+          console.log('Oops!')
+          alert("Tournament not found, try again.")
+          router.push('/tournaments')
+        })
+    } else {
+      alert("Could not find tournament from code, please try again.")
+      router.push('/tournaments')
+    }
   }, [])
 
   return (
