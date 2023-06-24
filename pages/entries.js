@@ -23,7 +23,7 @@ const Entries = () => {
   const [entries, setEntries] = useState([])
   const [tournamentLoading, setTournamentLoading] = useState(true)
   const [deletePending, setDeletePending] = useState(false)
-  const { userId, isLoggedIn, setContext } = useAppContext()
+  const { isLoggedIn } = useAppContext()
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -106,6 +106,8 @@ const Entries = () => {
               setEvent(data.events[0])
             })
         })
+    } else {
+      router.push("/tournaments")
     }
   }, [])
 

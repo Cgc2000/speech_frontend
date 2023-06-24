@@ -156,6 +156,7 @@ export function Tournament(props) {
   const [showSchools, setShowSchools] = useState(false)
   const [loading, setLoading] = useState(false)
   const [noCompetitors, setNoCompetitors] = useState(false)
+  const router = useRouter()
 
   const getCompetitors = () => {
     setLoading(true)
@@ -194,6 +195,12 @@ export function Tournament(props) {
         props.setTournaments(newTournaments)
       })
   }
+
+  const handleViewEvents = (id) => {
+    window.sessionStorage.setItem('EVENTS_APP_STATE', JSON.stringify({ tournamentId: id }))
+    router.push('/events')
+  }
+
   return (
     <div className={styles.tournament}>
       <div className={styles.fullWidth}>
@@ -204,12 +211,17 @@ export function Tournament(props) {
             <button className={styles.deleteButton} onClick={handleDelete}>Delete</button>
           </div>
         </div>
-        <p className={styles.schoolsEnteredTitle} onClick={toggleShowSchools}>{props.tournament.schoolsEntered} schools entered:</p>
-        {loading && <p className={styles.schoolsEntered}>Loading...</p>}
-        {noCompetitors && <p className={styles.schoolsEntered}>No schools found.</p>}
-        {showSchools && competitors.map(competitor =>
-          <p className={styles.schoolsEntered}>{competitor.competitorSchool} &#40;{competitor.numEntries} events&#41;</p>
-        )}
+        <div className={styles.inlineSplit}>
+          <div>
+            <p className={styles.schoolsEnteredTitle} onClick={toggleShowSchools}>{props.tournament.schoolsEntered} schools entered:</p>
+            {loading && <p className={styles.schoolsEntered}>Loading...</p>}
+            {noCompetitors && <p className={styles.schoolsEntered}>No schools found.</p>}
+            {showSchools && competitors.map(competitor =>
+              <p className={styles.schoolsEntered}>{competitor.competitorSchool} &#40;{competitor.numEntries} events&#41;</p>
+            )}
+          </div>
+          <button className={styles.viewEvents} onClick={() => handleViewEvents(props.tournament.tournamentId)}>View Events</button>
+        </div>
       </div>
     </div>
   )
