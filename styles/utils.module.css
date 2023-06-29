@@ -389,7 +389,6 @@
 .selectAll {
   font-size: small;
   margin: auto 1% 0;
-  position: relative;
   bottom: 0;
   color: blue;
   text-decoration: underline;
@@ -477,4 +476,22 @@
 .viewEvents:hover {
   background-image: linear-gradient(rgb(0 0 0/30%) 0 0);
   text-decoration: none;
+}
+
+.centerAddRooms {
+  display: flex;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 35%;
+}
+
+.inlineMessageItalics {
+  margin: auto 0;
+  font-style: italic;
+  font-size: small;
+}
+
+.inlineMessage {
+  margin: auto 0;
+  font-size: small;
 }

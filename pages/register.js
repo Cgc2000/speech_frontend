@@ -23,26 +23,28 @@ const Register = () => {
   const [managerPhone, setManagerPhone] = useState('')
   const [tournamentCity, setTournamentCity] = useState('')
   const [tournamentState, setTournamentState] = useState('AL')
-  const [checkedEventList, setCheckedEventList] = useState([]);
+  const [newEvent, setNewEvent] = useState('')
+  const [newRoom, setNewRoom] = useState('')
+  const [checkedEventList, setCheckedEventList] = useState([])
+  const [rooms, setRooms] = useState([])
   const [checkAll, setCheckAll] = useState(false)
-  const { userId, isLoggedIn, setContext } = useAppContext()
+  const { userId, isLoggedIn } = useAppContext()
   const router = useRouter();
-
-  const eventListData = [
-    { id: "1", value: "Prose" },
-    { id: "2", value: "Poetry" },
-    { id: "3", value: "Dramatic Interpretation (DI)" },
-    { id: "4", value: "Programmed Oral Interpretation (POI)" },
-    { id: "5", value: "Duo" },
-    { id: "6", value: "Informative" },
-    { id: "7", value: "Persuasive" },
-    { id: "8", value: "Communications Analysis (CA)" },
-    { id: "9", value: "After Dinner Speaking (ADS)" },
-    { id: "10", value: "Impromptu" },
-    { id: "11", value: "Extemporaneous" },
-    { id: "12", value: "International Public Debate Association (IPDA)" },
-    { id: "13", value: "Parliamentary Debate" }
-  ];
+  const [eventList, setEventList] = useState([
+    { value: "Prose" },
+    { value: "Poetry" },
+    { value: "Dramatic Interpretation (DI)" },
+    { value: "Programmed Oral Interpretation (POI)" },
+    { value: "Duo" },
+    { value: "Informative" },
+    { value: "Persuasive" },
+    { value: "Communications Analysis (CA)" },
+    { value: "After Dinner Speaking (ADS)" },
+    { value: "Impromptu" },
+    { value: "Extemporaneous" },
+    { value: "International Public Debate Association (IPDA)" },
+    { value: "Parliamentary Debate" }
+  ])
 
   const handleTournamentName = (e) => {
     setTournamentName(e.target.value);
@@ -68,6 +70,9 @@ const Register = () => {
   const handleTournamentState = (e) => {
     setTournamentState(e.target.value)
   }
+  const handleNewEvent = (e) => {
+    setNewEvent(e.target.value)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,7 +88,8 @@ const Register = () => {
         managerPhone: managerPhone,
         tournamentCity: tournamentCity,
         tournamentState: tournamentState,
-        events: checkedEventList
+        events: checkedEventList,
+        rooms: rooms
       })
       .then((res) => {
         router.push('/tournaments')
@@ -113,11 +119,25 @@ const Register = () => {
 
   const handleSelectAll = e => {
     setCheckAll(!checkAll);
-    setCheckedEventList(eventListData.map(li => li.value));
+    setCheckedEventList(eventList.map(li => li.value));
     if (checkAll) {
       setCheckedEventList([]);
     }
   };
+
+  const handleAddEvent = e => {
+    setEventList([...eventList, { value: newEvent }]);
+    setNewEvent('')
+  }
+
+  const handleNewRoom = e => {
+    setNewRoom(e.target.value)
+  }
+  const handleAddRoom = e => {
+    setRooms([...rooms, newRoom])
+    setNewRoom('')
+    console.log(rooms)
+  }
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -225,11 +245,23 @@ const Register = () => {
             <option value="WY">Wyoming</option>
           </select>
         </div>
+        <hr></hr>
+        <div className={styles.inline}>
+          <label className={styles.formLabel} for="rooms">Rooms:</label>
+          {rooms.length == 0 && <p className={styles.inlineMessageItalics}>No rooms added.</p>}
+          {rooms.length > 0 && <p className={styles.inlineMessage}>{rooms.join(", ")}</p>}
+        </div>
+        <div className={styles.centerAddRooms}>
+          <label className={styles.addEventsLabel} for="addRooms">Add rooms:</label>
+          <input type="text" id="addRooms" name="addRooms" onChange={handleNewRoom} value={newRoom} />
+          <button onClick={handleAddRoom} className={styles.inlineSubmitButton} type="button">Add</button>
+        </div>
+        <hr></hr>
         <div className={styles.inline}>
           <label className={styles.formLabelChecklist} for="eventsSelected">Events:</label>
           <p className={styles.selectAll} onClick={handleSelectAll}>Select all events</p>
         </div>
-        {eventListData.map((event) =>
+        {eventList.map((event) =>
           <div class={styles.center}>
             <input
               type="checkbox"
@@ -245,8 +277,11 @@ const Register = () => {
           <input
             type="text"
             name="addEvents"
+            value={newEvent}
+            onChange={handleNewEvent}
             id="addEvents"
           />
+          <button onClick={handleAddEvent} className={styles.inlineSubmitButton} type="button">Add</button>
         </div>
         <button className={styles.submitButton} type="submit">Submit</button>
       </form>

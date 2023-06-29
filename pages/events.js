@@ -45,10 +45,11 @@ const Events = () => {
               events: data.events
             }).then((res) => {
               const data = JSON.parse(res.data)
+              console.log(data)
               setEventEntries(data)
               setEventsLoading(false)
               console.log(data)
-            })
+            }).catch((err) => { setEventsLoading(false) })
         })
     }
   }, [])
