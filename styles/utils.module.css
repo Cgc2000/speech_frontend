@@ -495,3 +495,19 @@
   margin: auto 0;
   font-size: small;
 }
+
+.tournamentEntered {
+  margin-left: 15%;
+  margin-right: 15%;
+  border: 1px solid black;
+  border-radius: 3px;
+  min-width: fit-content;
+  justify-content: space-between;
+}
+
+.inlineRight {
+  display: flex;
+  justify-content: end;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}

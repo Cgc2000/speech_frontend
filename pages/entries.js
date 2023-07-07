@@ -69,7 +69,7 @@ const Entries = () => {
       client
         .post('/tournament/delete_entry/', {
           competitorId: competitorId,
-          entryId, entryId
+          entryId: entryId
         }).then((res) => {
           const newEntries = entries.filter(entry => entry.entryId != entryId)
           setDeletePending(false)
@@ -160,28 +160,31 @@ const Entries = () => {
       </form>
       <hr></hr>
       {competitor && <h2 className={styles.titleContainer}>{competitor.competitorSchool} Entries</h2>}
-      <table className={styles.entriesTable}>
-        <tbody>
-          <tr>
-            <th className={styles.entriesHeader}>Competitor Code</th>
-            <th className={styles.entriesHeader}>Competitor Name</th>
-            <th className={styles.entriesHeader}>Additional Competitors</th>
-            <th className={styles.entriesHeader}>Event</th>
-            <th className={styles.entriesHeader}>Options</th>
-          </tr>
-          {entries && entries.map((entry) =>
+      {entries.length == 0 &&
+        <p className={styles.titleContainer}>No Entries Found</p>}
+      {entries.length > 0 &&
+        <table className={styles.entriesTable}>
+          <tbody>
             <tr>
-              <td className={styles.entriesRow}>{entry.schoolKey}{entry.studentId}</td>
-              <td className={styles.entriesRow}>{entry.name}</td>
-              {entry.additionalNames && <td className={styles.entriesRow}>{entry.additionalNames.join(", ")}</td>}
-              <td className={styles.entriesRow}>{entry.event}</td>
-              <td className={styles.entriesRow}>
-                <button className={styles.deleteButtonEntries} onClick={() => handleDelete(entry.entryId, entry.competitorId)}>Delete</button>
-              </td>
+              <th className={styles.entriesHeader}>Competitor Code</th>
+              <th className={styles.entriesHeader}>Competitor Name</th>
+              <th className={styles.entriesHeader}>Additional Competitors</th>
+              <th className={styles.entriesHeader}>Event</th>
+              <th className={styles.entriesHeader}>Options</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+            {entries && entries.map((entry) =>
+              <tr>
+                <td className={styles.entriesRow}>{entry.schoolKey}{entry.studentId}</td>
+                <td className={styles.entriesRow}>{entry.name}</td>
+                {entry.additionalNames && <td className={styles.entriesRow}>{entry.additionalNames.join(", ")}</td>}
+                <td className={styles.entriesRow}>{entry.event}</td>
+                <td className={styles.entriesRow}>
+                  <button className={styles.deleteButtonEntries} onClick={() => handleDelete(entry.entryId, entry.competitorId)}>Delete</button>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>}
     </Layout>
   );
 }

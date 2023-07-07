@@ -108,6 +108,11 @@ export default function Tournaments() {
     router.push('/entries')
   }
 
+  const handleAddJudges = (id) => {
+    window.sessionStorage.setItem('ADD_ENTRIES_APP_STATE', JSON.stringify({ competitorId: id }))
+    router.push('/judges')
+  }
+
   return (
     <Layout>
       <Head>
@@ -129,12 +134,17 @@ export default function Tournaments() {
       {enteredLoading &&
         <p className={styles.tournamentLoading}>Loading...</p>}
       {enteredTournaments.map(tournament =>
-        <div className={styles.tournament}>
-          <p className={styles.enteredTournamentSchool}>{tournament.competitorSchool}</p>
-          <p className={styles.enteredTournamentContainer}>{tournament.tournamentName}</p>
-          <div className={styles.tournamentRight}>
+        <div className={styles.tournamentEntered}>
+          <div className={styles.inlineSplit}>
+            <p className={styles.enteredTournamentSchool}>{tournament.competitorSchool}</p>
+            <p className={styles.enteredTournamentContainer}>{tournament.tournamentName}</p>
+            <div className={styles.tournamentRight}>
+              <button className={styles.withdrawButton} onClick={() => handleEnteredDelete(tournament.tournamentId, tournament.competitorId)}>Withdraw</button>
+            </div>
+          </div>
+          <div className={styles.inlineRight}>
+            <button className={styles.addEntriesButton} onClick={() => handleAddJudges(tournament.competitorId)}>Add Judges</button>
             <button className={styles.addEntriesButton} onClick={() => handleAddEntries(tournament.competitorId)}>Add Entries</button>
-            <button className={styles.withdrawButton} onClick={() => handleEnteredDelete(tournament.tournamentId, tournament.competitorId)}>Withdraw</button>
           </div>
         </div>)}
       <button className={styles.registerLink} onClick={handleSignupClick}>
